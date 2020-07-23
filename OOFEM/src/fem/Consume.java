@@ -38,11 +38,16 @@ public class Consume {
 	}
 	public static void main(String[] args) {
 		Structure struct = createStructure ();
-		Viewer viewer = new Viewer ();
-		Cone c=new Cone(1,1,1);
-		c.setDirection(0,1,0);
-		viewer.addObject3D(c);
-		viewer.setVisible ( true );
+		struct.printStructure();
+		Viewer view = new Viewer ();
+		Visualizer viz = new Visualizer (struct , view );
+		viz.drawNodes();
+		viz . drawElements ();
+		viz . drawConstraints ();
+		viz . setForceSymbolScale (3e-5);
+		viz . setForceSymbolRadius (0.075);
+		viz . drawElementForces ();
+		view . setVisible ( true );
 	}
 
 }
