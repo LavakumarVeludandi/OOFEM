@@ -2,10 +2,13 @@ package fem;
 
 import java.util.*;
 import inf.text.ArrayFormat;
+import iceb.jnumerics.*;
 
 public class Structure {
 	private ArrayList<Node> node=new ArrayList<Node>();
 	private ArrayList<Element> element=new ArrayList<Element>();
+	private IMatrix kGlobal;
+	private double[] rGlobal,uGlobal;
 	public Node addNode(double x1  , double x2 ,double x3) {
 		Node n=new Node(x1,x2,x3);
 		node.add(n);
@@ -67,10 +70,57 @@ public class Structure {
 			count++;
 		}
 	} 
-	//public void solve() {} 
-	//private int enumerateDOFs() {} 
-	//private void assembleLoadVector(double[] rGlobal) {} 
-	//private void assembleStiffnessMatrix(IMatrix kGlobal) {} 
+	public void solve() {
+		int NEQ=enumerateDOFs();
+		kGlobal=new Array2DMatrix(NEQ,NEQ);
+		rGlobal=new double[NEQ];
+		uGlobal=new double[NEQ];
+		assembleStiffnessMatrix(kGlobal);
+		assembleLoadVector(rGlobal);
+		System.out.println(ArrayFormat.fFormat(kGlobal.toString()));
+		System.out.println(ArrayFormat.format(rGlobal));
+	} 
+	private int enumerateDOFs() {
+		int max=0;
+		int start=0;
+		for(Node n:node) {
+			start=n.enumerateDOFs(start);
+		}
+		for(Element e:element) {
+			e.enumerateDOFs();
+		}
+		for(Node n:node) {
+			for(int i=0;i<n.getDOFNumbers().length;i++) {
+				max=Math.max(max, n.getDOFNumbers()[i]);
+			}
+		}
+		return max+1;
+	} 
+	private void assembleLoadVector(double[] rGlobal) {
+		for(Node n:node) {
+			if(n.getForce()!=null) {
+				for(int i:n.getDOFNumbers()) {
+					if(i!=-1) {
+						rGlobal[i]+=n.getForce().getComponent(i);
+					}
+				}
+			}
+		}
+	} 
+	private void assembleStiffnessMatrix(IMatrix kGlobal) {
+		for(Element e:element) {
+			IMatrix temp=e.computeStiffnessMatrix();
+			for(int i:e.getDOFNumbers()) {
+				if(i!=-1) {
+					for(int j:e.getDOFNumbers()) {
+						if(j!=-1) {
+							kGlobal.add(i, j, temp.get(i, j));
+						}
+					}
+				}
+			}
+		}
+	} 
 	//private void selectDisplacements(double[] uGlobal) {} 
 	//public void printResults() {} 
 }

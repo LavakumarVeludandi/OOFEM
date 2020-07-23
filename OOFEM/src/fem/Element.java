@@ -20,7 +20,6 @@ public  class Element {
         	dofNumbers[pos] = element;
             pos++;
         }
-
         for (int element : n2.getDOFNumbers()) {
         	dofNumbers[pos] = element;
             pos++;
@@ -55,22 +54,22 @@ public  class Element {
 		System.out.println(ArrayFormat.format(getEModulus())+"\t"+ArrayFormat.format(getArea())+"\t"+ArrayFormat.format(getLength()));
 	}
 	public IMatrix computeStiffnessMatrix() {
-		IMatrix e1=new Array2DMatrix(2,6);
+		IMatrix T=new Array2DMatrix(2,6);
 		IMatrix ke=new Array2DMatrix(2,2);
 		IMatrix temp=new Array2DMatrix(6,2);
 		IMatrix kGlobal=new Array2DMatrix(6,6);
 		//Adding the directional cosines in the transformation matrix
-		e1.addRow(0, 0, getE1());
-		e1.addRow(1, 3, getE1());
+		T.addRow(0, 0, getE1());
+		T.addRow(1, 3, getE1());
 		//Local stiffness Matrix
 		double con = (this.eModulus * this.area / getLength());
 		ke.add(0, 0, con*1);
 		ke.add(0, 1, con*-1);
 		ke.add(1, 0, con*-1);
-		ke.add(0, 1, con*1);
+		ke.add(1, 1, con*1);
 		//Converting Local Element Stiffness Matrix to global Element Stiffness matrix.
-		BLAM . multiply (1.0 , BLAM . TRANSPOSE , e1,BLAM . NO_TRANSPOSE , ke, 0.0 , temp );
-		BLAM . multiply (1.0 , BLAM . NO_TRANSPOSE , temp ,BLAM . NO_TRANSPOSE , ke, 0.0 , kGlobal);
+		BLAM . multiply (1.0 , BLAM . TRANSPOSE ,T ,BLAM . NO_TRANSPOSE , ke, 0.0 , temp );
+		BLAM . multiply (1.0 , BLAM . NO_TRANSPOSE , temp ,BLAM . NO_TRANSPOSE , T, 0.0 , kGlobal);
 		//Returning the global Element Stiffness matrix
 		return kGlobal;
 	}

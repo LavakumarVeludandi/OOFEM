@@ -41,7 +41,8 @@ public class Consume {
 	}
 	public static void main(String[] args) {
 		Structure struct = createStructure ();
-		struct.printStructure();
+		struct.solve();
+		/*
 		Viewer view = new Viewer ();
 		Visualizer viz = new Visualizer (struct , view );
 		viz.drawNodes();
@@ -52,6 +53,7 @@ public class Consume {
 		viz . drawElementForces ();
 		viz.drawDisplacements();
 		view . setVisible ( true );
+		*/
 	}
 
 }
