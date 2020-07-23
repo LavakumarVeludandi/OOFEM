@@ -33,6 +33,9 @@ public class Consume {
 		struct . addElement (e, a, 1, 2);
 		struct . addElement (e, a, 2, 3);
 		struct . addElement (e, a, 3, 1);
+		//Creating temporary displacements
+		double []deltau= {-1,-1,-1};
+		n1.setDisplacement(deltau);
 		// return the new structure
 		return struct ;
 	}
@@ -47,6 +50,7 @@ public class Consume {
 		viz . setForceSymbolScale (3e-5);
 		viz . setForceSymbolRadius (0.075);
 		viz . drawElementForces ();
+		viz.drawDisplacements();
 		view . setVisible ( true );
 	}
 
