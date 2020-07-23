@@ -3,6 +3,7 @@ package fem;
 import java.util.*;
 import inf.text.ArrayFormat;
 import iceb.jnumerics.*;
+import iceb.jnumerics.lse.*;
 
 public class Structure {
 	private ArrayList<Node> node=new ArrayList<Node>();
@@ -75,10 +76,26 @@ public class Structure {
 		kGlobal=new Array2DMatrix(NEQ,NEQ);
 		rGlobal=new double[NEQ];
 		uGlobal=new double[NEQ];
+		// create the solver object
+		ILSESolver solver = new GeneralMatrixLSESolver ();
+		QuadraticMatrixInfo aInfo = solver . getAInfo ();
+		// Creating K and r with zeros
+		kGlobal= solver . getA ();
+		rGlobal= new double [NEQ];
+		// initialize solver
+		aInfo . setSize ( NEQ );
+		solver . initialize ();
+		// setting entries of matrix and right hand side
 		assembleStiffnessMatrix(kGlobal);
 		assembleLoadVector(rGlobal);
-		System.out.println(ArrayFormat.fFormat(kGlobal.toString()));
-		System.out.println(ArrayFormat.format(rGlobal));
+		// Solver executing for result
+		try {
+			solver . solve (rGlobal);
+		} catch ( SolveFailedException e) {
+			System .out . println (" Solve failed : " + e. getMessage ());
+		}
+		selectDisplacements(rGlobal);
+		printResults();
 	} 
 	private int enumerateDOFs() {
 		int max=0;
@@ -121,6 +138,26 @@ public class Structure {
 			}
 		}
 	} 
-	//private void selectDisplacements(double[] uGlobal) {} 
-	//public void printResults() {} 
+	private void selectDisplacements(double[] uGlobal) {
+		for(Node n:node) {
+			double temp[]=new double[3];
+			for(int j=0;j<3;j++) {
+				for(int i=0;i<uGlobal.length;i++) {
+					if(n.getDOFNumbers()[j]!=-1 && n.getDOFNumbers()[j]==i) {
+						temp[j]=temp[j]+uGlobal[i];
+					}
+				}
+			}
+			n.setDisplacement(temp);
+		}
+	} 
+	public void printResults() {
+		System.out.println("Displacements");
+		int count=0;
+		System.out.println("node"+ArrayFormat.fFormat("u1")+ArrayFormat.fFormat("u2")+ArrayFormat.fFormat("u3"));
+		for(Node n:node) {
+			System.out.println(ArrayFormat.format(count)+ArrayFormat.format(n.getDisplacement().toArray()));
+			count++;
+		}
+	} 
 }

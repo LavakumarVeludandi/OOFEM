@@ -1,5 +1,6 @@
 package fem;
 
+
 import inf.text.ArrayFormat;
 import inf.v3d.obj.*;
 import inf.v3d.view.Viewer;
@@ -54,6 +55,7 @@ public class Consume {
 		viz.drawDisplacements();
 		view . setVisible ( true );
 		*/
+		
 	}
 
 }
