@@ -152,11 +152,19 @@ public class Structure {
 		}
 	} 
 	public void printResults() {
+		System.out.println("\nListing Analysis Results \n");
 		System.out.println("Displacements");
 		int count=0;
 		System.out.println("node"+ArrayFormat.fFormat("u1")+ArrayFormat.fFormat("u2")+ArrayFormat.fFormat("u3"));
 		for(Node n:node) {
 			System.out.println(ArrayFormat.format(count)+ArrayFormat.format(n.getDisplacement().toArray()));
+			count++;
+		}
+		System.out.println("\nElement forces");
+		System.out.println("elem"+ArrayFormat.fFormat("force"));
+		count=0;
+		for(Element e:element) {
+			System.out.println(ArrayFormat.format(count)+ArrayFormat.format(e.computeForce()));
 			count++;
 		}
 	} 

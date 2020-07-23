@@ -72,8 +72,7 @@ public  class Element {
 		BLAM . multiply (1.0 , BLAM . NO_TRANSPOSE , temp ,BLAM . NO_TRANSPOSE , T, 0.0 , kGlobal);
 		//Returning the global Element Stiffness matrix
 		return kGlobal;
-	}
-	//public double computeForce() {} 
+	} 
 	public Vector3D getE1() {
 		double c[]=new double[3];
 		for(int i=0;i<c.length;i++) {
@@ -81,5 +80,17 @@ public  class Element {
 		}
 		Vector3D v=new Vector3D(c);
 		return v;
-	} 
+	}
+	public double computeForce() {
+		IMatrix temp=new Array2DMatrix(2,1);
+		IMatrix T=new Array2DMatrix(2,6);
+		T.addRow(0, 0, getE1());
+		T.addRow(1, 3, getE1());
+		IMatrix u=new Array2DMatrix(6,1);
+		u.addColumn(0, 0, this.n1.getDisplacement());
+		u.addColumn(3, 0, this.n2.getDisplacement());
+		BLAM . multiply (1.0 , BLAM . NO_TRANSPOSE ,T ,BLAM . NO_TRANSPOSE , u, 0.0 , temp );
+		double N=(this.eModulus*this.area)*(temp.get(1, 0)-temp.get(0, 0))/this.getLength();
+		return N;
+	}
 }

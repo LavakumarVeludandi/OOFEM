@@ -1,5 +1,5 @@
 package fem;
-import inf.text.ArrayFormat;
+
 import inf.v3d.obj.*;
 import inf .v3d . view .* ;
 public class Visualizer {
@@ -79,6 +79,7 @@ public class Visualizer {
 		}
 	} 
 	public void drawDisplacements() {
+		//Displaced nodes
 		for(int i = 0 ; i < struct.getNumberOfNodes() ; i++) {
 			Sphere s=new Sphere();
 			double temp[]=new double[3];
@@ -90,6 +91,7 @@ public class Visualizer {
 			s.setColor(0,60,0);
 			view.addObject3D(s);
 		}
+		//Displaced elements
 		CylinderSet cs = new CylinderSet();
 		for(int i=0;i<struct.getNumberOfElements();i++) {
 			double []temp1= new double[3];//Enter node1 after displacement
@@ -102,5 +104,6 @@ public class Visualizer {
 			cs.setColor(0, 255, 0);
 		}
 		view.addObject3D(cs);
+		//Element Normal Forces
 	} 
 }
