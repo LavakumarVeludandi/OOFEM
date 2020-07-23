@@ -34,16 +34,13 @@ public class Consume {
 		struct . addElement (e, a, 1, 2);
 		struct . addElement (e, a, 2, 3);
 		struct . addElement (e, a, 3, 1);
-		//Creating temporary displacements
-		double []deltau= {-1,-1,-1};
-		n1.setDisplacement(deltau);
 		// return the new structure
 		return struct ;
 	}
 	public static void main(String[] args) {
 		Structure struct = createStructure ();
+		struct.printStructure();
 		struct.solve();
-		/*
 		Viewer view = new Viewer ();
 		Visualizer viz = new Visualizer (struct , view );
 		viz.drawNodes();
@@ -54,8 +51,6 @@ public class Consume {
 		viz . drawElementForces ();
 		viz.drawDisplacements();
 		view . setVisible ( true );
-		*/
-		
 	}
 
 }
