@@ -8,6 +8,7 @@ public  class Element {
 	private double eModulus;
 	private int[] dofNumbers=new int[6];
 	private Node n1,n2;
+	private IMatrix T=new Array2DMatrix(2,6);
 	public Element(double e,double a, Node n1,Node n2) {
 		area=a;
 		eModulus=e;
@@ -54,7 +55,6 @@ public  class Element {
 		System.out.println(ArrayFormat.format(getEModulus())+"\t"+ArrayFormat.format(getArea())+"\t"+ArrayFormat.format(getLength()));
 	}
 	public IMatrix computeStiffnessMatrix() {
-		IMatrix T=new Array2DMatrix(2,6);
 		IMatrix ke=new Array2DMatrix(2,2);
 		IMatrix temp=new Array2DMatrix(6,2);
 		IMatrix kGlobal=new Array2DMatrix(6,6);
@@ -83,9 +83,6 @@ public  class Element {
 	}
 	public double computeForce() {
 		IMatrix temp=new Array2DMatrix(2,1);
-		IMatrix T=new Array2DMatrix(2,6);
-		T.addRow(0, 0, getE1());
-		T.addRow(1, 3, getE1());
 		IMatrix u=new Array2DMatrix(6,1);
 		u.addColumn(0, 0, this.n1.getDisplacement());
 		u.addColumn(3, 0, this.n2.getDisplacement());

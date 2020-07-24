@@ -1,6 +1,7 @@
 package fem;
 
 
+import iceb.jnumerics.Vector3D;
 import inf.text.ArrayFormat;
 import inf.v3d.obj.*;
 import inf.v3d.view.Viewer;
@@ -44,11 +45,11 @@ public class Consume {
 		Viewer view = new Viewer ();
 		Visualizer viz = new Visualizer (struct , view );
 		viz.drawNodes();
-		viz . drawElements ();
-		viz . drawConstraints ();
-		viz . setForceSymbolScale (3e-5);
-		viz . setForceSymbolRadius (0.075);
-		viz . drawElementForces ();
+		viz.drawElements ();
+		viz.drawConstraints ();
+		viz.setForceSymbolScale (3e-5);
+		viz.setForceSymbolRadius (0.075);
+		viz.drawElementForces ();
 		viz.drawDisplacements();
 		view . setVisible ( true );
 	}

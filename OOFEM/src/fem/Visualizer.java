@@ -1,9 +1,10 @@
 package fem;
 
+import iceb.jnumerics.Vector3D;
 import inf.v3d.obj.*;
 import inf .v3d . view .* ;
 public class Visualizer {
-	private double dispalcementScale;
+	private double dispalcementScale=1e4;
 	private double symbolScale=10;
 	private Structure struct;
 	private Viewer view;
@@ -84,7 +85,7 @@ public class Visualizer {
 			Sphere s=new Sphere();
 			double temp[]=new double[3];
 			for(int j=0;j<struct.getNode(i).getPosition().getSize();j++) {
-				temp[j]=struct.getNode(i).getPosition().toArray()[j]+struct.getNode(i).getDisplacement().toArray()[j]*1e4;
+				temp[j]=struct.getNode(i).getPosition().toArray()[j]+struct.getNode(i).getDisplacement().toArray()[j]*dispalcementScale;
 			}
 			s.setCenter(temp);
 			s.setRadius(0.2);
@@ -94,16 +95,29 @@ public class Visualizer {
 		//Displaced elements
 		CylinderSet cs = new CylinderSet();
 		for(int i=0;i<struct.getNumberOfElements();i++) {
-			double []temp1= new double[3];//Enter node1 after displacement
-			double []temp2= new double[3];//Enter node2 after displacement
-			for(int j=0;j<3;j++) {
-				temp1[j]=struct.getElement(i).getNode1().getPosition().toArray()[j]+struct.getElement(i).getNode1().getDisplacement().toArray()[j]*1e4;
-				temp2[j]=struct.getElement(i).getNode2().getPosition().toArray()[j]+struct.getElement(i).getNode2().getDisplacement().toArray()[j]*1e4;
-			}	
-			cs.addCylinder(temp1, temp2,struct.getElement(i).getArea()*10);
+			double F=struct.getElement(i).computeForce();
+			Vector3D temp1=struct.getElement(i).getNode1().getDisplacement().multiply(dispalcementScale);
+			Vector3D temp2=struct.getElement(i).getNode2().getDisplacement().multiply(dispalcementScale);
+			Vector3D n1=struct.getElement(i).getNode1().getPosition().add(temp1);
+			Vector3D n2=struct.getElement(i).getNode2().getPosition().add(temp2);	
+			cs.addCylinder(n1.toArray(), n2.toArray(),struct.getElement(i).getArea()*10);
 			cs.setColor(0, 255, 0);
+			//Element Normal forces view using polygon set
+			Vector3D d=n1.subtract(n2).normalize();
+			Vector3D p=d.vectorProduct(n1);
+			double []x3=n1.add(F*5e-6, p).toArray();
+			double []x4=n2.add(F*5e-6, p).toArray();
+			PolygonSet ps=new PolygonSet();
+			ps.insertVertex(n1.toArray(), 0);
+			ps.insertVertex(n2.toArray(), 1);
+			ps.insertVertex(x4, 2);
+			ps.insertVertex(x3, 3);
+			ps.polygonComplete();
+			ps.setVisible(true);
+			ps.setColor("red");
+			view.addObject3D(ps);
+			
 		}
 		view.addObject3D(cs);
-		//Element Normal Forces
 	} 
 }
